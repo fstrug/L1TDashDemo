@@ -38,13 +38,14 @@ fig_met_efficiency = go.Figure(data=[go.Bar(x = bin_center_array, y=MET_40_effic
                                      visible=True))]
                                )
 fig_met_efficiency.update_layout(
-            title= "$$MET\, Efficiency\, at\, Threshold\, p_T=40\, [GeV]$$",
+            title= "$$\\text{Offline}~E_T^{miss}~\\text{efficiency for L1}~E_T^{miss} >40~\\text{GeV}$$",
             xaxis=dict(
-                title = "$$MET\, p_T\, [GeV]$$"
+                title = "$$\\text{Offline}~E_T^{miss}~\\text{[GeV]}$$"
             ),
             yaxis=dict(
-                title = "$$Efficiency$$"
-            )
+                title = "Efficiency"
+            ),
+            template="plotly_dark"
         )
 
 #######################################################################################################ET hist
@@ -72,11 +73,12 @@ fig_ET_hist.update_traces(marker_color='rgb(200,0,150)', opacity=1) #can set col
 fig_ET_hist.update_layout(
             title="$$L1\, E_T^{miss}$$",
             xaxis=dict(
-                title = "$$L1\, MET\, p_T\, [GeV]$$"
+                title = "$$\\text{L1}~E_T^{miss}~\\text{[GeV]}$$"
             ),
             yaxis=dict(
-                title = "$$Events$$"
-            )
+                title = "Events"
+            ),
+            template="plotly_dark"
         )
 #######################################################################################################MET resolution
 resolution_MET = data["resolutionMET"]
@@ -104,11 +106,12 @@ fig_resolution_MET = go.Figure(data=[go.Bar(x = bin_center_array, y=resolution_M
 fig_resolution_MET.update_layout(
             title=resolution_MET.title,
             xaxis=dict(
-                title = "$$\frac{1 \over 2}$$"
+                title = "$$\\frac{\\text{L1}~E_T^{miss} - \\text{offline}~E_T^{miss}}{\\text{offline}~E_T^{miss}}$$"
             ),
             yaxis=dict(
-                title = "$$Events$$"
-            )
+                title = "Events"
+            ),
+            template="plotly_dark"
         )
 #######################################################################################################L1METvsCaloMET
 L1METvsCaloMET = data["L1METvsCaloMET"]
@@ -122,13 +125,14 @@ fig_L1vsCaloMET = go.Figure(data=go.Heatmap(
                   colorscale = 'Viridis'))
 
 fig_L1vsCaloMET.update_layout(
-            title="$$L1\, E_T^{miss}\, vs\, Offline\, E_T^{miss}$$",
+            title="$$\\text{L1}~E_T^{miss}~\\text{vs offline}~E_T^{miss}$$",
             xaxis=dict(
-                title = "$$Offline\, E_T^{miss}\, [GeV]$$"
+                title = "$$\\text{offline}~E_T^{miss}~\\text{[GeV]}$$"
             ),
             yaxis=dict(
-                title = "$$L1\, E_T^{miss}\, [GeV]$$"
-            )
+                title = "$$\\text{L1}~E_T^{miss}~\\text{[GeV]}$$"
+            ),
+            template="plotly_dark"
         )
 
 
@@ -137,24 +141,18 @@ external_stylesheets = [dbc.themes.DARKLY]
 app = Dash(__name__, external_stylesheets=external_stylesheets)
 
 # App layout
-app.layout = dbc.Container([
-        dbc.Row([
-        html.Div(children='L1T Shifter Plots Demo', className="text-primary text-center fs-3")
-        ]),
-        html.Div(style={'padding': 10}),
-        dbc.Row([
-           dbc.Col([
-                   dcc.Graph(figure=fig_ET_hist, mathjax=True),
-                   ], width=6),
-           dbc.Col([
-                   dcc.Graph(figure=fig_met_efficiency, mathjax=True),
-                   ], width=6),
-           dbc.Col([
-                   dcc.Graph(figure=fig_resolution_MET, mathjax=True),
-                   ], width=12),
-        ]),
-        dcc.Graph(figure=fig_L1vsCaloMET, mathjax=True)
+
+app.layout = html.Div(className='row', children=[
+    html.H1("Demo for the L1T offline DQM shifter space"),
+    dcc.Dropdown(['Please select a run', '356381'], 'Please select a run'),
+    html.Div(children=[
+    	dcc.Graph(figure=fig_ET_hist, mathjax=True, style={'display': 'inline-block'}),
+        dcc.Graph(figure=fig_met_efficiency, mathjax=True,  style={'display': 'inline-block'}),
+        dcc.Graph(figure=fig_resolution_MET, mathjax=True,  style={'display': 'inline-block'}),
+        dcc.Graph(figure=fig_L1vsCaloMET, mathjax=True,  style={'display': 'inline-block'})
     ])
+])
+
 
 # Run the app
 if __name__ == '__main__':
