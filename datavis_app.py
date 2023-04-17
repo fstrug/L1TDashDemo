@@ -27,16 +27,30 @@ for i in range((len(bin_edges)-1)):
         bin_center = (bin_edges[i] + bin_edges[i+1])/2.0
         bin_center_array = numpy.append(bin_center_array, bin_center)
 
-fig_met_efficiency = go.Figure(data=[go.Bar(x = bin_center_array, y=MET_40_efficiency_hist.values(), width = 2*bin_width_array,
+#Cap off vertical uncertainty
+error_y_plus = numpy.array([])
+MET_40_efficiency_values = MET_40_efficiency.values()
+MET_40_efficiency_errors = MET_40_efficiency.errors()
+for i, element in enumerate(MET_40_efficiency_values):
+        if (MET_40_efficiency_errors[i]+element) > 1:
+                error_y_plus = numpy.append(error_y_plus, 1-element)
+        else:
+                error_y_plus = numpy.append(error_y_plus, MET_40_efficiency_errors[i])
+
+fig_met_efficiency = go.Figure(data=[go.Scatter(x = bin_center_array, y=MET_40_efficiency_values,
                              error_y = dict(
                                      type='data',
-                                     array=MET_40_efficiency.errors(),
+                                     symmetric=False,
+                                     array=error_y_plus,
+                                     arrayminus=MET_40_efficiency.errors(),
                                      visible=True),
                              error_x = dict(
                                      type='data',
                                      array = bin_width_array,
-                                     visible=True))]
-                               )
+                                     visible=True),
+                             mode="markers"                                             
+)]
+)
 fig_met_efficiency.update_layout(
             title= "$$\\text{Offline}~E_T^{miss}~\\text{efficiency for L1}~E_T^{miss} >40~\\text{GeV}$$",
             xaxis=dict(
