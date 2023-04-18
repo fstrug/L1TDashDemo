@@ -83,7 +83,7 @@ fig_ET_hist = go.Figure(data=[go.Bar(x = bin_center_array, y=ET_hist.values(), w
                                                              array = numpy.ones(len(bin_center_array))*bin_width,
                                                              visible=True))]
                                )
-fig_ET_hist.update_traces(marker_color='rgb(200,0,150)', opacity=1) #can set color of bar with rgb
+#fig_ET_hist.update_traces(marker_color='rgb(200,0,150)', opacity=1) #can set color of bar with rgb
 fig_ET_hist.update_layout(
             title="$$L1\, E_T^{miss}$$",
             xaxis=dict(
@@ -98,8 +98,12 @@ fig_ET_hist.update_layout(
 resolution_MET = data["resolutionMET"]
 resolution_MET_hist = resolution_MET
 
-#Find bin centers
+#Set color of each bar
 bin_edges = resolution_MET_hist.to_numpy()[1]
+colors = ["blue",]*(len(bin_edges)-1)
+colors[-1] = "crimson"
+
+#Find bin centers
 bin_center_array = []
 bin_width = (bin_edges[1] - bin_edges[0])/2
 for i in range((len(bin_edges)-1)):
@@ -117,6 +121,7 @@ fig_resolution_MET = go.Figure(data=[go.Bar(x = bin_center_array, y=resolution_M
                                                              array = numpy.ones(len(bin_center_array))*bin_width,
                                                              visible=True))]
                                )
+fig_resolution_MET.update_traces(marker_color = colors)
 fig_resolution_MET.update_layout(
             title=resolution_MET.title,
             xaxis=dict(
